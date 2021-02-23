@@ -4,10 +4,7 @@ import model.Course;
 import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static spark.Spark.*;
 
@@ -38,6 +35,32 @@ public class WebServer {
             String query = req.queryParams("query");
             res.redirect("/search?query=" + query);
             return null;
+        }, new HandlebarsTemplateEngine());
+
+        //view description
+        get("/courses/:offeringName", (req, res) -> {
+            String CN = req.params("offeringName");
+            Set<Course> courses = Unirest.get("/classes")
+                    .queryString("Key", KEY)
+                    .queryString("CourseNumber", CN.replace(".", ""))
+                    .asObject(new GenericType<Set<Course>>() {
+                    })
+                    .getBody();
+            Iterator iter = courses.iterator();
+            String section = ((Course)iter.next()).getSN();
+
+            Set<Course> c = Unirest.get("/classes")
+                    .queryString("Key", KEY)
+                    .queryString("CourseNumber", CN.replace(".", "") + section)
+                    .asObject(new GenericType<Set<Course>>() {
+                    })
+                    .getBody();
+
+            Iterator iter2 = c.iterator();
+            Course c2 = (Course)iter2.next();
+            Map<String, Object> model = Map.of("course", c2, "description", c2.getDescription());
+
+            return new ModelAndView(model, "course.hbs");
         }, new HandlebarsTemplateEngine());
 
     }

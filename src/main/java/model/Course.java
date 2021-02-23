@@ -2,6 +2,8 @@ package model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -15,17 +17,41 @@ public class Course {
     @SerializedName(value = "Title")
     private String title;
 
+    @SerializedName(value = "Description")
+    private String description;
+
+    @SerializedName(value = "SectionName")
+    private String sectionnum;
+
+    @SerializedName(value = "SectionDetails")
+    private List<Details> details;
+
     /**
      * Construct a Course.
      *
      * @param offeringName The course alphanumeric code.
      * @param title The course Title.
      */
-    public Course(String offeringName, String title) {
+    public Course(String offeringName, String title, String sectionnum) {
         this.offeringName = offeringName;
         this.title = title;
+        this.sectionnum = sectionnum;
     }
 
+    public Course(String offeringName, String title, String descp, String sectionnum) {
+        this.offeringName = offeringName;
+        this.title = title;
+        this.description = descp;
+        this.sectionnum = sectionnum;
+    }
+
+    //public String getDetails() {
+     //   return details.getDesc();
+    //}
+
+    public String getSN() {
+        return sectionnum;
+    }
     /**
      * Get the title of the course.
      *
@@ -33,6 +59,11 @@ public class Course {
      */
     public String getTitle() {
         return title;
+    }
+
+    public String getDescription() {
+        return details.get(0).getDesc();
+        //return details;
     }
 
     /**
